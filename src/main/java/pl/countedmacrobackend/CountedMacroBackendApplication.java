@@ -4,6 +4,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.countedmacrobackend.domain.Role;
 import pl.countedmacrobackend.domain.User;
 import pl.countedmacrobackend.service.UserService;
@@ -15,6 +17,11 @@ public class CountedMacroBackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CountedMacroBackendApplication.class, args);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
