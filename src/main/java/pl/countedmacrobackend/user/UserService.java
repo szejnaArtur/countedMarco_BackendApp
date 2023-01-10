@@ -1,7 +1,7 @@
-package pl.countedmacrobackend.service;
+package pl.countedmacrobackend.user;
 
-import pl.countedmacrobackend.domain.Role;
-import pl.countedmacrobackend.domain.User;
+import pl.countedmacrobackend.user.Role;
+import pl.countedmacrobackend.user.User;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.domain;
+package pl.countedmacrobackend.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

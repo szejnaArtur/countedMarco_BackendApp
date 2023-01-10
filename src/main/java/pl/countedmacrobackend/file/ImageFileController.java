@@ -1,38 +1,39 @@
-package pl.countedmacrobackend.controller;
+package pl.countedmacrobackend.file;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.countedmacrobackend.entity.FileDB;
-import pl.countedmacrobackend.message.ResponseFile;
-import pl.countedmacrobackend.message.ResponseMessage;
-import pl.countedmacrobackend.service.FileStorageService;
+import pl.countedmacrobackend.product.ProductDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:8080")
-public class FileController {
+class ImageFileController {
 
-    private final FileStorageService storageService;
+    private final ImageFileStorageService storageService;
 
-    public FileController(final FileStorageService storageService) {
+    ImageFileController(final ImageFileStorageService storageService) {
         this.storageService = storageService;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+    ResponseEntity<ResponseMessage> uploadFile(@RequestPart("file") MultipartFile file, @RequestPart("product") ProductDto product) {
         String message = "";
         try {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            System.out.println(fileName);
+            System.out.println(product.getCalories());
             storageService.store(file);
 
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
@@ -44,7 +45,7 @@ public class FileController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<List<ResponseFile>> getListFiles() {
+    ResponseEntity<List<ResponseFile>> getListFiles() {
         List<ResponseFile> files = storageService.getAllFiles().map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
@@ -63,11 +64,11 @@ public class FileController {
     }
 
     @GetMapping("/files/{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable String id) {
-        FileDB fileDB = storageService.getFile(id);
+    ResponseEntity<byte[]> getFile(@PathVariable String id) {
+        Image image = storageService.getFile(id);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-                .body(fileDB.getData());
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getName() + "\"")
+                .body(image.getData());
     }
 }

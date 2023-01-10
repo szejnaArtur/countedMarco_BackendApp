@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.filter;
+package pl.countedmacrobackend.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+    AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 

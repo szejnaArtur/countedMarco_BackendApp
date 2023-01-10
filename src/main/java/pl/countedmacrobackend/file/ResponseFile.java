@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.message;
+package pl.countedmacrobackend.file;
 
 public class ResponseFile {
 

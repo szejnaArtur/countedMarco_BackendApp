@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.service;
+package pl.countedmacrobackend.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.countedmacrobackend.domain.Role;
-import pl.countedmacrobackend.domain.User;
-import pl.countedmacrobackend.repository.RoleRepository;
-import pl.countedmacrobackend.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;

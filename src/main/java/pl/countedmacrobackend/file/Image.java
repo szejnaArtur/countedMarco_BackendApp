@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.entity;
+package pl.countedmacrobackend.file;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "files")
-public class FileDB {
+public class Image {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -24,11 +24,11 @@ public class FileDB {
     @Lob
     private byte[] data;
 
-    public FileDB() {
+    public Image() {
 
     }
 
-    public FileDB(String name, String type, byte[] data) {
+    public Image(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
         this.data = data;

@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.api;
+package pl.countedmacrobackend.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.countedmacrobackend.domain.Role;
-import pl.countedmacrobackend.domain.User;
-import pl.countedmacrobackend.service.UserService;
+import pl.countedmacrobackend.user.Role;
+import pl.countedmacrobackend.user.User;
+import pl.countedmacrobackend.user.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,34 +29,34 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserResource {
+class UserResource {
     private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
+    ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/users/save")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
     @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
+    ResponseEntity<Role> saveRole(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
     @PostMapping("/role/addToUser")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
+    ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/token/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
