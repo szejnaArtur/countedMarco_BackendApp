@@ -1,5 +1,7 @@
 package pl.countedmacrobackend.product;
 
+import pl.countedmacrobackend.product.dto.VitaminDto;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

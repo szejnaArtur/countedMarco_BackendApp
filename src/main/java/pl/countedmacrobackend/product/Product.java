@@ -1,6 +1,7 @@
 package pl.countedmacrobackend.product;
 
-import pl.countedmacrobackend.file.Image;
+import pl.countedmacrobackend.file.query.SimpleImageQueryDto;
+import pl.countedmacrobackend.product.dto.ProductDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ class Product {
 
     @OneToOne
     @JoinColumn(name = "image_id")
-    private Image image;
+    private SimpleImageQueryDto image;
 
     public Product() {
     }
@@ -51,79 +52,48 @@ class Product {
         this.fat = dto.getFat();
         this.protein = dto.getProtein();
         this.water = dto.getWater();
-        this.image = dto.getFile();
+        this.image = new SimpleImageQueryDto(
+                dto.getImage().getId(),
+                dto.getImage().getName(),
+                dto.getImage().getType(),
+                dto.getImage().getData()
+        );
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
     public Double getCalories() {
         return calories;
-    }
-
-    public void setCalories(final Double calories) {
-        this.calories = calories;
     }
 
     public Double getCarbs() {
         return carbs;
     }
 
-    public void setCarbs(final Double carbs) {
-        this.carbs = carbs;
-    }
-
     public Double getFat() {
         return fat;
-    }
-
-    public void setFat(final Double fat) {
-        this.fat = fat;
     }
 
     public Double getProtein() {
         return protein;
     }
 
-    public void setProtein(final Double protein) {
-        this.protein = protein;
-    }
-
     public Double getWater() {
         return water;
     }
 
-    public void setWater(final Double water) {
-        this.water = water;
-    }
-
-    public Image getImage() {
+    public SimpleImageQueryDto getImage() {
         return image;
-    }
-
-    public void setImage(final Image image) {
-        this.image = image;
     }
 
     @Override

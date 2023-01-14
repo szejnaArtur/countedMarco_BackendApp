@@ -3,16 +3,15 @@ package pl.countedmacrobackend.file;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.countedmacrobackend.product.ProductDto;
+import pl.countedmacrobackend.file.dto.ResponseFile;
+import pl.countedmacrobackend.file.dto.ResponseMessage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,19 +20,16 @@ import java.util.stream.Collectors;
 @CrossOrigin("http://localhost:8080")
 class ImageFileController {
 
-    private final ImageFileStorageService storageService;
+    private final ImageFileStorageFacade storageService;
 
-    ImageFileController(final ImageFileStorageService storageService) {
+    ImageFileController(final ImageFileStorageFacade storageService) {
         this.storageService = storageService;
     }
 
     @PostMapping("/upload")
-    ResponseEntity<ResponseMessage> uploadFile(@RequestPart("file") MultipartFile file, @RequestPart("product") ProductDto product) {
+    ResponseEntity<ResponseMessage> uploadFile(@PathVariable MultipartFile file) {
         String message = "";
         try {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            System.out.println(fileName);
-            System.out.println(product.getCalories());
             storageService.store(file);
 
             message = "Uploaded the file successfully: " + file.getOriginalFilename();

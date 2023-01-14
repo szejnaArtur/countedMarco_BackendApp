@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import pl.countedmacrobackend.file.ResponseMessage;
+import pl.countedmacrobackend.file.dto.ResponseMessage;
+import pl.countedmacrobackend.product.dto.ProductDto;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ import java.util.List;
 @CrossOrigin("http://localhost:3000")
 class ProductController {
 
-    private final ProductService productService;
+    private final ProductFacade productFacade;
 
-    ProductController(final ProductService productService) {
-        this.productService = productService;
+    ProductController(final ProductFacade productFacade) {
+        this.productFacade = productFacade;
     }
 
     @PostMapping
@@ -30,12 +31,10 @@ class ProductController {
         String message = "";
 
         try {
-            System.out.println("Wchodzi do try");
-            productService.add(productDto, file);
+            productFacade.add(productDto, file);
             message = "Saved the product successfully: " + productDto.getName();
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         } catch (Exception e) {
-            System.out.println("Wchodzi do catch");
             message = "Could not saved the product: " + productDto.getName() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
@@ -43,12 +42,12 @@ class ProductController {
 
     @GetMapping
     ResponseEntity<List<ProductDto>> findAll() {
-        return ResponseEntity.ok().body(productService.findAll());
+        return ResponseEntity.ok().body(productFacade.findAll());
     }
 
     @GetMapping("/{id}")
     ResponseEntity<ProductDto> findById(@PathVariable Long id) {
-        ProductDto dto = productService.findById(id);
+        ProductDto dto = productFacade.findById(id);
         return ResponseEntity.ok().body(dto);
     }
 }

@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.file;
+package pl.countedmacrobackend.file.dto;
 
 public class ResponseMessage {
     private String message;

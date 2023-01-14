@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Component("imageWarmup")
 class Warmup implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final ImageFileStorageService imageService;
+    private final ImageFileStorageFacade imageService;
 
-    Warmup(final ImageFileStorageService imageService) {
+    Warmup(final ImageFileStorageFacade imageService) {
         this.imageService = imageService;
     }
 
