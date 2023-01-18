@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+@Service
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
+class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.error("User not found in the database.");
             throw new UsernameNotFoundException("User not found in the database.");
         } else {
-            log.info("User found in the database: {}", username );
+            log.info("User found in the database: {}", username);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {

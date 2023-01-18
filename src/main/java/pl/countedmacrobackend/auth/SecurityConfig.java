@@ -36,11 +36,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests().antMatchers("/api/login", "/api/token/refresh").permitAll();
+        http.authorizeRequests().antMatchers("/api/login", "/api/token/refresh").permitAll();
 //        http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAuthority("ROLE_USER");
 //        http.authorizeRequests().antMatchers(GET, "/upload", "/files", "/files/**").permitAll();
 //        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAuthority("ROLE_ADMIN");
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(authenticationFilter);
         http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

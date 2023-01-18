@@ -1,4 +1,4 @@
-package pl.countedmacrobackend.auth;
+package pl.countedmacrobackend.user;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -8,18 +8,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.countedmacrobackend.user.Role;
-import pl.countedmacrobackend.user.User;
-import pl.countedmacrobackend.user.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -66,7 +69,6 @@ class UserResource {
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
                 User user = userService.getUser(username);
-                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 String accessToken = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
@@ -90,10 +92,10 @@ class UserResource {
             throw new RuntimeException("Refresh token is missing");
         }
     }
-}
 
-@Data
-class RoleToUserForm {
-    private String username;
-    private String roleName;
+    @Data
+    static class RoleToUserForm {
+        private String username;
+        private String roleName;
+    }
 }
