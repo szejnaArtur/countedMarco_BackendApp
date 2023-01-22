@@ -41,6 +41,15 @@ class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User userRegistration(User user) {
+        log.info("Saving new user {} to the database.", user.getUsername());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role role = roleRepo.findByName("ROLE_USER");
+        user.addRole(role);
+        return userRepo.save(user);
+    }
+
+    @Override
     public User saveUser(User user) {
         log.info("Saving new user {} to the database.", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
