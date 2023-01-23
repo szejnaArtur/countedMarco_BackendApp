@@ -13,5 +13,5 @@ public interface UserService {
 
     List<User> getUsers();
 
-    User userRegistration(User user);
+    User userRegistration(User user) throws Exception;
 }

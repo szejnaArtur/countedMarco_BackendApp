@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +27,14 @@ class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
-        if (user == null) {
+        Optional<User> optionalUser = userRepo.findByUsername(username);
+        if (optionalUser.isEmpty()) {
             log.error("User not found in the database.");
             throw new UsernameNotFoundException("User not found in the database.");
         } else {
             log.info("User found in the database: {}", username);
         }
+        User user = optionalUser.get();
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -41,12 +43,17 @@ class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User userRegistration(User user) {
-        log.info("Saving new user {} to the database.", user.getUsername());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = roleRepo.findByName("ROLE_USER");
-        user.addRole(role);
-        return userRepo.save(user);
+    public User userRegistration(User user) throws Exception {
+        Optional<User> optionalUser = userRepo.findByUsername(user.getUsername());
+        if (optionalUser.isPresent()) {
+            throw new Exception("The given email is already taken.");
+        } else {
+            log.info("Saving new user {} to the database.", user.getUsername());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            Role role = roleRepo.findByName("ROLE_USER");
+            user.addRole(role);
+            return userRepo.save(user);
+        }
     }
 
     @Override
@@ -65,15 +72,18 @@ class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}.", roleName, username);
-        User user = userRepo.findByUsername(username);
-        Role role = roleRepo.findByName(roleName);
-        user.getRoles().add(role);
+        Optional<User> optionalUser = userRepo.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            Role role = roleRepo.findByName(roleName);
+            optionalUser.get().getRoles().add(role);
+        }
     }
 
     @Override
     public User getUser(String username) {
         log.info("Fetching user {}.", username);
-        return userRepo.findByUsername(username);
+        Optional<User> optionalUser = userRepo.findByUsername(username);
+        return optionalUser.orElse(null);
     }
 
     @Override
