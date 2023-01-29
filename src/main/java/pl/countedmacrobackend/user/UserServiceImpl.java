@@ -27,7 +27,7 @@ class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepo.findByUsername(username);
+        Optional<User> optionalUser = userRepo.findByEmail(username);
         if (optionalUser.isEmpty()) {
             log.error("User not found in the database.");
             throw new UsernameNotFoundException("User not found in the database.");
@@ -39,16 +39,16 @@ class UserServiceImpl implements UserService, UserDetailsService {
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
     @Override
     public User userRegistration(User user) throws Exception {
-        Optional<User> optionalUser = userRepo.findByUsername(user.getUsername());
+        Optional<User> optionalUser = userRepo.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
             throw new Exception("The given email is already taken.");
         } else {
-            log.info("Saving new user {} to the database.", user.getUsername());
+            log.info("Saving new user {} to the database.", user.getEmail());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             Role role = roleRepo.findByName("ROLE_USER");
             user.addRole(role);
@@ -58,7 +58,7 @@ class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(User user) {
-        log.info("Saving new user {} to the database.", user.getUsername());
+        log.info("Saving new user {} to the database.", user.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
@@ -70,9 +70,9 @@ class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user {}.", roleName, username);
-        Optional<User> optionalUser = userRepo.findByUsername(username);
+    public void addRoleToUser(String email, String roleName) {
+        log.info("Adding role {} to user {}.", roleName, email);
+        Optional<User> optionalUser = userRepo.findByEmail(email);
         if (optionalUser.isPresent()) {
             Role role = roleRepo.findByName(roleName);
             optionalUser.get().getRoles().add(role);
@@ -80,9 +80,9 @@ class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUser(String username) {
-        log.info("Fetching user {}.", username);
-        Optional<User> optionalUser = userRepo.findByUsername(username);
+    public User getUser(String email) {
+        log.info("Fetching user {}.", email);
+        Optional<User> optionalUser = userRepo.findByEmail(email);
         return optionalUser.orElse(null);
     }
 
